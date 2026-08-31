@@ -1,0 +1,424 @@
+.create-food-page {
+  min-height: 100vh;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  padding: var(--space-6) var(--space-4);
+}
+
+.create-food-container {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ================================
+   Header
+================================ */
+
+.create-food-header {
+  margin-bottom: var(--space-8);
+}
+
+.create-food-eyebrow {
+  margin: 0 0 var(--space-2);
+
+  color: var(--color-accent);
+
+  font-size: 13px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.create-food-header h1 {
+  margin: 0;
+
+  color: var(--color-text-primary);
+
+  font-size: 30px;
+  line-height: 1.15;
+  font-weight: 750;
+
+  letter-spacing: -0.03em;
+}
+
+.create-food-subtitle {
+  max-width: 520px;
+
+  margin: var(--space-3) 0 0;
+
+  color: var(--color-text-secondary);
+
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+
+/* ================================
+   Form
+================================ */
+
+.create-food-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+
+  padding: var(--space-5);
+
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-card);
+}
+
+.food-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+
+/* ================================
+   Labels
+================================ */
+
+.food-form-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.food-form-label {
+  color: var(--color-text-primary);
+
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.food-form-required {
+  color: var(--color-text-muted);
+
+  font-size: 12px;
+}
+
+.food-character-count {
+  color: var(--color-text-muted);
+
+  font-size: 12px;
+}
+
+
+/* ================================
+   Video Upload
+================================ */
+
+.video-upload-box {
+  width: 100%;
+  min-height: 230px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: var(--space-6);
+
+  background: var(--color-surface-muted);
+
+  border: 1.5px dashed var(--color-border-hover);
+  border-radius: var(--radius-md);
+
+  color: var(--color-text-primary);
+
+  cursor: pointer;
+
+  transition:
+    background var(--transition-normal),
+    border-color var(--transition-normal),
+    transform var(--transition-normal);
+}
+
+.video-upload-box:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-accent);
+}
+
+.video-upload-box:active {
+  transform: scale(0.99);
+}
+
+.video-upload-icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: var(--space-3);
+
+  background: var(--color-accent-soft);
+
+  border-radius: 50%;
+
+  color: var(--color-accent);
+
+  font-size: 28px;
+  font-weight: 300;
+}
+
+.video-upload-box strong {
+  margin-bottom: var(--space-1);
+
+  font-size: 15px;
+}
+
+.video-upload-box span {
+  color: var(--color-text-muted);
+
+  font-size: 12px;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+
+/* ================================
+   Video Preview
+================================ */
+
+.video-preview-container {
+  position: relative;
+
+  overflow: hidden;
+
+  background: #000;
+
+  border-radius: var(--radius-md);
+}
+
+.food-video-preview {
+  display: block;
+
+  width: 100%;
+  max-height: 520px;
+
+  object-fit: contain;
+
+  background: #000;
+}
+
+.video-remove-button {
+  width: 100%;
+
+  padding: var(--space-3);
+
+  background: var(--color-surface);
+
+  border: 0;
+  border-top: 1px solid var(--color-border);
+
+  color: var(--color-accent);
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 650;
+
+  cursor: pointer;
+}
+
+
+/* ================================
+   Inputs
+================================ */
+
+.food-input,
+.food-textarea {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  background: var(--input-background);
+
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+
+  color: var(--color-text-primary);
+
+  font-family: inherit;
+  font-size: 15px;
+
+  outline: none;
+
+  transition:
+    border-color var(--transition-normal),
+    box-shadow var(--transition-normal);
+}
+
+.food-input {
+  min-height: 48px;
+
+  padding: 0 var(--space-4);
+}
+
+.food-textarea {
+  min-height: 130px;
+
+  padding: var(--space-3) var(--space-4);
+
+  line-height: 1.5;
+
+  resize: vertical;
+}
+
+.food-input::placeholder,
+.food-textarea::placeholder {
+  color: var(--input-placeholder);
+}
+
+.food-input:hover,
+.food-textarea:hover {
+  border-color: var(--input-border-hover);
+}
+
+.food-input:focus,
+.food-textarea:focus {
+  border-color: var(--input-border-focus);
+  box-shadow: var(--shadow-input);
+}
+
+.food-input-hint {
+  color: var(--color-text-muted);
+
+  font-size: 12px;
+}
+
+
+/* ================================
+   Messages
+================================ */
+
+.food-form-message {
+  padding: var(--space-3) var(--space-4);
+
+  border-radius: var(--radius-sm);
+
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.food-form-error {
+  background: var(--color-accent-soft);
+
+  border: 1px solid var(--color-accent);
+
+  color: var(--color-accent);
+}
+
+.food-form-success {
+  background: var(--color-surface-muted);
+
+  border: 1px solid var(--color-border);
+
+  color: var(--color-text-primary);
+}
+
+
+/* ================================
+   Submit
+================================ */
+
+.create-food-button {
+  min-height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+
+  padding: 0 var(--space-5);
+
+  background: var(--button-background);
+
+  border: none;
+  border-radius: var(--radius-sm);
+
+  color: var(--button-text);
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    background var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.create-food-button:hover:not(:disabled) {
+  background: var(--button-background-hover);
+}
+
+.create-food-button:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.create-food-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+
+/* ================================
+   Loading
+================================ */
+
+.button-loader {
+  width: 16px;
+  height: 16px;
+
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: var(--button-text);
+
+  border-radius: 50%;
+
+  animation: button-spin 0.7s linear infinite;
+}
+
+@keyframes button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ================================
+   Tablet / Desktop
+================================ */
+
+@media (min-width: 640px) {
+
+  .create-food-page {
+    padding: var(--space-10) var(--space-6);
+  }
+
+  .create-food-header h1 {
+    font-size: 36px;
+  }
+
+  .create-food-form {
+    padding: var(--space-8);
+  }
+
+  .video-upload-box {
+    min-height: 280px;
+  }
+
+}

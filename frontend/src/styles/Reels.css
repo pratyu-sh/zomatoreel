@@ -1,0 +1,754 @@
+/* =========================================
+   REELS PAGE
+========================================= */
+
+.reels-page {
+  position: relative;
+
+  width: 100%;
+  height: 100dvh;
+
+  overflow: hidden;
+
+  background: #000;
+}
+
+
+/* =========================================
+   FEED
+========================================= */
+
+.reels-feed {
+  width: 100%;
+  height: 100%;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+
+  scrollbar-width: none;
+}
+
+.reels-feed::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* =========================================
+   INDIVIDUAL REEL
+========================================= */
+
+.reel {
+  position: relative;
+
+  width: 100%;
+  height: 100dvh;
+
+  overflow: hidden;
+
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+
+  background: #000;
+}
+
+
+/* =========================================
+   VIDEO
+========================================= */
+
+.reel-video {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  background: #000;
+}
+
+
+/* =========================================
+   VIDEO OVERLAY
+========================================= */
+
+.reel-overlay {
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.88) 0%,
+      rgba(0, 0, 0, 0.65) 14%,
+      rgba(0, 0, 0, 0.22) 38%,
+      rgba(0, 0, 0, 0.04) 62%,
+      transparent 75%
+    );
+}
+
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.reel-content {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: 10;
+
+  padding:
+    32px
+    32px
+    48px;
+}
+
+
+/* =========================================
+   FOOD NAME
+========================================= */
+
+.reel-food-name {
+  margin: 0 0 7px;
+
+  color: #fff;
+
+  font-size: clamp(22px, 3vw, 30px);
+  line-height: 1.15;
+
+  font-weight: 750;
+
+  letter-spacing: -0.5px;
+}
+
+
+/* =========================================
+   STORE LINK
+========================================= */
+
+.reel-store-link {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  margin-bottom: 9px;
+
+  color: #fff;
+  background-color: #ff3040;
+  border-radius: 14px;
+  padding: 4px 8px;
+
+  font-size: 14px;
+  font-weight: 650;
+
+  text-decoration: none;
+
+  opacity: 0.95;
+
+  transition: opacity 0.2s ease;
+}
+
+.reel-store-link:hover {
+  opacity: 0.7;
+}
+
+.reel-store-link span {
+  font-size: 18px;
+
+  transition:
+    transform 0.2s ease;
+}
+
+.reel-store-link:hover span {
+  transform: translateX(3px);
+}
+
+
+/* =========================================
+   DESCRIPTION
+========================================= */
+
+.reel-description {
+  max-width: 580px;
+
+  margin: 0 0 48px;
+
+  color: rgba(255, 255, 255, 0.86);
+
+  font-size: 14px;
+  line-height: 1.5;
+
+  display: -webkit-box;
+
+  overflow: hidden;
+
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+
+/* =========================================
+   BACK BUTTON
+========================================= */
+
+.reels-back-button {
+  position: absolute;
+
+  top: 24px;
+  left: 24px;
+
+  z-index: 50;
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+
+  background: rgba(0, 0, 0, 0.35);
+
+  backdrop-filter: blur(12px);
+
+  color: #fff;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.reels-back-button:hover {
+  background: rgba(0, 0, 0, 0.55);
+
+  transform: translateX(-2px);
+}
+
+.reels-back-button span {
+  font-size: 20px;
+}
+
+
+/* =========================================
+   BRAND
+========================================= */
+
+.reels-brand {
+  position: absolute;
+
+  top: 25px;
+  left: 50%;
+
+  z-index: 50;
+
+  transform: translateX(-50%);
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  color: #fff;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  pointer-events: none;
+}
+
+.reels-brand-mark {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #fff;
+
+  color: #000;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+
+/* =========================================
+   LOADING / ERROR STATES
+========================================= */
+
+.reels-page-state {
+  width: 100%;
+  height: 100dvh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #000;
+
+  color: #fff;
+}
+
+.reels-loader,
+.reels-state-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}
+
+.reels-loader p,
+.reels-state-content p {
+  margin: 14px 0 0;
+
+  color: rgba(255, 255, 255, 0.65);
+
+  font-size: 13px;
+}
+
+
+/* Spinner */
+
+.loader-spinner {
+  width: 28px;
+  height: 28px;
+
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #fff;
+
+  border-radius: 50%;
+
+  animation:
+    reel-spin 0.8s linear infinite;
+}
+
+@keyframes reel-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* State Icon */
+
+.state-icon {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+
+  color: #fff;
+
+  font-size: 20px;
+}
+
+.reels-state-content h2 {
+  margin: 0;
+
+  color: #fff;
+
+  font-size: 20px;
+}
+
+.state-button {
+  margin-top: 22px;
+
+  padding: 10px 18px;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: #fff;
+  color: #000;
+
+  font-size: 13px;
+  font-weight: 650;
+
+  cursor: pointer;
+}
+
+
+/* =========================================
+   DESKTOP
+========================================= */
+
+@media (min-width: 768px) {
+
+  .reel {
+    display: flex;
+    justify-content: center;
+  }
+
+  .reel-video {
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  .reel-content {
+    width: 100%;
+    max-width: 1000px;
+  }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+  .reels-content {
+    padding-bottom: 30px;
+  }
+
+  .reel-content {
+    padding:
+      24px
+      18px
+      calc(28px + env(safe-area-inset-bottom));
+  }
+
+  .reel-food-name {
+    font-size: 21px;
+  }
+
+  .reel-store-link {
+    font-size: 13px;
+  }
+
+  .reel-description {
+    font-size: 13px;
+
+    max-width: 95%;
+  }
+
+  .reels-back-button {
+    top: 16px;
+    left: 16px;
+
+    width: 38px;
+    height: 38px;
+  }
+
+  .reels-brand {
+    top: 20px;
+  }
+
+}
+
+
+/* =========================================
+   REEL ACTIONS
+   ========================================= */
+
+.reel-actions {
+  position: absolute;
+  right: 20px;
+  bottom: 120px;
+  margin: 0 0  50px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 18px;
+
+  z-index: 20;
+}
+
+.reel-action-button {
+  width: 56px;
+
+  padding: 0;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #ffffff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 4px;
+
+  cursor: pointer;
+
+  -webkit-tap-highlight-color: transparent;
+
+  transition: transform 0.2s ease;
+}
+
+.reel-action-button:hover {
+  transform: scale(1.08);
+}
+
+.reel-action-button:active {
+  transform: scale(0.9);
+}
+
+.reel-action-icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(0, 0, 0, 0.38);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  font-size: 28px;
+
+  line-height: 1;
+  
+
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.reel-action-count,
+.reel-action-label {
+  font-size: 12px;
+
+  font-weight: 600;
+
+  color: #ffffff;
+
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+/* Liked */
+
+.reel-action-button.liked .reel-action-icon {
+  color: #ff3040;
+}
+
+/* Saved */
+
+.reel-action-button.saved .reel-action-icon {
+  filter: brightness(1.2);
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .reel-actions {
+    right: 12px;
+    bottom: 105px;
+    gap: 14px;
+  }
+
+  .reel-action-button {
+    width: 50px;
+  }
+
+  .reel-action-icon {
+    width: 43px;
+    height: 43px;
+
+    font-size: 25px;
+  }
+
+  .reel-action-count,
+  .reel-action-label {
+    font-size: 11px;
+  }
+}
+
+/* =========================================
+   BOTTOM NAVIGATION
+========================================= */
+
+.reels-bottom-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+
+  width: min(100%, 520px);
+  height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  padding: 8px 18px calc(8px + env(safe-area-inset-bottom));
+
+  background: rgba(10, 10, 10, 0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  z-index: 1000;
+}
+
+
+.reels-nav-item {
+  border: 0;
+  background: transparent;
+
+  min-width: 64px;
+  min-height: 52px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  color: rgba(255, 255, 255, 0.55);
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.reels-nav-item svg {
+  flex-shrink: 0;
+}
+
+
+.reels-nav-item span {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+
+.reels-nav-item:hover {
+  color: white;
+}
+
+
+.reels-nav-item.active {
+  color: white;
+}
+
+
+.reels-nav-item:active {
+  transform: scale(0.92);
+}
+
+
+/* =========================================
+   REEL ACTIONS
+========================================= */
+
+.reel-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+
+.reel-action-button {
+  border: 0;
+  background: transparent;
+
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  padding: 6px;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+
+.reel-action-button:hover {
+  transform: scale(1.08);
+}
+
+
+.reel-action-button:active {
+  transform: scale(0.92);
+}
+
+
+.reel-action-button.liked {
+  color: #ff3040;
+}
+
+
+.reel-action-button.saved {
+  color: #ffffff;
+}
+
+
+.reel-action-count,
+.reel-action-label {
+  font-size: 11px;
+  font-weight: 600;
+
+  color: white;
+
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+
+/* =========================================
+   MOBILE SAFE AREA
+========================================= */
+
+@media (max-width: 600px) {
+  .reels-bottom-nav {
+    height: 68px;
+  }
+
+  .reel-actions {
+    gap: 15px;
+  }
+
+  .reel-action-button svg {
+    width: 26px;
+    height: 26px;
+  }
+}
