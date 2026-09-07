@@ -16,22 +16,16 @@ import "../../styles/Reels.css";
 const Reels = () => {
   const navigate = useNavigate();
 
-  // =========================================
-  // STATE
-  // =========================================
-
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  // Like / Save states
   const [likedVideos, setLikedVideos] = useState(new Set());
   const [savedVideos, setSavedVideos] = useState(new Set());
   const [likeCounts, setLikeCounts] = useState({});
+  const [saveCounts, setSaveCounts] = useState({});
 
-  // Video refs
   const videoRefs = useRef(new Map());
-  const containerRef = useRef(null);
+  const feedRef = useRef(null);
 
   // =========================================
   // FETCH FOOD REELS
@@ -43,49 +37,38 @@ const Reels = () => {
         setLoading(true);
         setError("");
 
-        const response = await axios.get(
-          "http://localhost:3000/api/food",
-          {
-            withCredentials: true,
-          }
-        );
-
-        console.log("Food API response:", response.data);
+        const response = await axios.get("http://localhost:3000/api/food", {
+          withCredentials: true,
+        });
 
         const foodItems = response.data.fooditems || [];
-
         setVideos(foodItems);
 
-        // Initialize like/save state
         const likes = {};
+        const saves = {};
         const liked = new Set();
         const saved = new Set();
 
         foodItems.forEach((item) => {
           likes[item._id] = item.likeCount || item.LikeCount || 0;
-
-          if (item.isLiked) {
-            liked.add(item._id);
-          }
-
-          if (item.isSaved) {
-            saved.add(item._id);
-          }
+          saves[item._id] = item.saveCount || 0;
+          if (item.isLiked) liked.add(item._id);
+          if (item.isSaved) saved.add(item._id);
         });
 
         setLikeCounts(likes);
+        setSaveCounts(saves);
         setLikedVideos(liked);
         setSavedVideos(saved);
       } catch (error) {
-        console.error(
-          "Failed to fetch food:",
-          error.response?.data || error
-        );
+        console.error("Failed to fetch food:", error.response?.data || error);
 
-        setError(
-          error.response?.data?.message ||
-            "Unable to load food reels."
-        );
+        if (error.response?.status === 401) {
+          navigate("/user/login");
+          return;
+        }
+
+        setError(error.response?.data?.message || "Unable to load food reels.");
       } finally {
         setLoading(false);
       }
@@ -104,91 +87,45 @@ const Reels = () => {
 
     const currentlyLiked = likedVideos.has(foodId);
 
-    // Optimistic UI update
-    setLikedVideos((previous) => {
-      const updated = new Set(previous);
-
-      if (currentlyLiked) {
-        updated.delete(foodId);
-      } else {
-        updated.add(foodId);
-      }
-
+    setLikedVideos((prev) => {
+      const updated = new Set(prev);
+      currentlyLiked ? updated.delete(foodId) : updated.add(foodId);
       return updated;
     });
 
-    setLikeCounts((previous) => ({
-      ...previous,
-      [foodId]: Math.max(
-        0,
-        (previous[foodId] || 0) +
-          (currentlyLiked ? -1 : 1)
-      ),
+    setLikeCounts((prev) => ({
+      ...prev,
+      [foodId]: Math.max(0, (prev[foodId] || 0) + (currentlyLiked ? -1 : 1)),
     }));
 
     try {
       const response = await axios.post(
         "http://localhost:3000/api/food/like",
         { foodid: foodId },
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
 
-      console.log("Like response:", response.data);
-
-      // Sync with backend response
-      if (
-        typeof response.data.likeCount === "number"
-      ) {
-        setLikeCounts((previous) => ({
-          ...previous,
-          [foodId]: response.data.likeCount,
-        }));
+      if (typeof response.data.likeCount === "number") {
+        setLikeCounts((prev) => ({ ...prev, [foodId]: response.data.likeCount }));
       }
 
-      if (
-        typeof response.data.isLiked === "boolean"
-      ) {
-        setLikedVideos((previous) => {
-          const updated = new Set(previous);
-
-          if (response.data.isLiked) {
-            updated.add(foodId);
-          } else {
-            updated.delete(foodId);
-          }
-
+      if (typeof response.data.isLiked === "boolean") {
+        setLikedVideos((prev) => {
+          const updated = new Set(prev);
+          response.data.isLiked ? updated.add(foodId) : updated.delete(foodId);
           return updated;
         });
       }
     } catch (error) {
-      console.error(
-        "Failed to like food:",
-        error.response?.data || error
-      );
-
-      // Rollback like state
-      setLikedVideos((previous) => {
-        const updated = new Set(previous);
-
-        if (currentlyLiked) {
-          updated.add(foodId);
-        } else {
-          updated.delete(foodId);
-        }
-
+      console.error("Failed to like food:", error.response?.data || error);
+      setLikedVideos((prev) => {
+        const updated = new Set(prev);
+        currentlyLiked ? updated.add(foodId) : updated.delete(foodId);
         return updated;
       });
-
-      // Rollback like count
-      setLikeCounts((previous) => ({
-        ...previous,
-        [foodId]: Math.max(
-          0,
-          (previous[foodId] || 0) +
-            (currentlyLiked ? 1 : -1)
-        ),
+      setLikeCounts((prev) => ({
+        ...prev,
+        [foodId]: Math.max(0, (prev[foodId] || 0) + (currentlyLiked ? 1 : -1)),
       }));
     }
   };
@@ -203,93 +140,66 @@ const Reels = () => {
 
     const currentlySaved = savedVideos.has(foodId);
 
-    // Optimistic UI update
-    setSavedVideos((previous) => {
-      const updated = new Set(previous);
-
-      if (currentlySaved) {
-        updated.delete(foodId);
-      } else {
-        updated.add(foodId);
-      }
-
+    setSavedVideos((prev) => {
+      const updated = new Set(prev);
+      currentlySaved ? updated.delete(foodId) : updated.add(foodId);
       return updated;
     });
+
+    setSaveCounts((prev) => ({
+      ...prev,
+      [foodId]: Math.max(0, (prev[foodId] || 0) + (currentlySaved ? -1 : 1)),
+    }));
 
     try {
       const response = await axios.post(
         "http://localhost:3000/api/food/save",
         { foodid: foodId },
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
 
-      console.log("Save response:", response.data);
+      if (typeof response.data.saveCount === "number") {
+        setSaveCounts((prev) => ({ ...prev, [foodId]: response.data.saveCount }));
+      }
 
-      // Sync with backend response
-      if (
-        typeof response.data.isSaved === "boolean"
-      ) {
-        setSavedVideos((previous) => {
-          const updated = new Set(previous);
-
-          if (response.data.isSaved) {
-            updated.add(foodId);
-          } else {
-            updated.delete(foodId);
-          }
-
+      if (typeof response.data.isSaved === "boolean") {
+        setSavedVideos((prev) => {
+          const updated = new Set(prev);
+          response.data.isSaved ? updated.add(foodId) : updated.delete(foodId);
           return updated;
         });
       }
     } catch (error) {
-      console.error(
-        "Failed to save food:",
-        error.response?.data || error
-      );
-
-      // Rollback save state
-      setSavedVideos((previous) => {
-        const updated = new Set(previous);
-
-        if (currentlySaved) {
-          updated.add(foodId);
-        } else {
-          updated.delete(foodId);
-        }
-
+      console.error("Failed to save food:", error.response?.data || error);
+      setSavedVideos((prev) => {
+        const updated = new Set(prev);
+        currentlySaved ? updated.add(foodId) : updated.delete(foodId);
         return updated;
       });
+      setSaveCounts((prev) => ({
+        ...prev,
+        [foodId]: Math.max(0, (prev[foodId] || 0) + (currentlySaved ? 1 : -1)),
+      }));
     }
   };
-
-  // =========================================
-  // COMMENTS
-  // =========================================
 
   const handleComments = (event, foodId) => {
     event.preventDefault();
     event.stopPropagation();
-
     navigate(`/food/${foodId}/comments`);
   };
-
-  // =========================================
-  // VIDEO REF
-  // =========================================
 
   const setVideoRef = (id) => (element) => {
     if (!element) {
       videoRefs.current.delete(id);
       return;
     }
-
     videoRefs.current.set(id, element);
   };
 
   // =========================================
-  // INTERSECTION OBSERVER
+  // INTERSECTION OBSERVER — uses feedRef as root
+  // so it tracks visibility inside the scroll container
   // =========================================
 
   useEffect(() => {
@@ -299,34 +209,18 @@ const Reels = () => {
       (entries) => {
         entries.forEach((entry) => {
           const video = entry.target;
-
-          if (
-            entry.isIntersecting &&
-            entry.intersectionRatio >= 0.75
-          ) {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
             // Pause all other videos
-            videoRefs.current.forEach(
-              (otherVideo) => {
-                if (otherVideo !== video) {
-                  otherVideo.pause();
-                }
-              }
-            );
-
-            // Play current video
+            videoRefs.current.forEach((otherVideo) => {
+              if (otherVideo !== video) otherVideo.pause();
+            });
+            // Play this one
             if (video.paused) {
-              const playPromise = video.play();
-
-              if (playPromise !== undefined) {
-                playPromise.catch((error) => {
-                  if (error.name !== "AbortError") {
-                    console.error(
-                      "Video playback error:",
-                      error
-                    );
-                  }
-                });
-              }
+              video.play().catch((err) => {
+                if (err.name !== "AbortError") {
+                  console.error("Video playback error:", err);
+                }
+              });
             }
           } else {
             video.pause();
@@ -334,17 +228,13 @@ const Reels = () => {
         });
       },
       {
-        threshold: [0.75],
+        root: null,        // use the viewport as root
+        threshold: [0.5],  // fire when >50% visible
       }
     );
 
-    videoRefs.current.forEach((video) => {
-      observer.observe(video);
-    });
-
-    return () => {
-      observer.disconnect();
-    };
+    videoRefs.current.forEach((video) => observer.observe(video));
+    return () => observer.disconnect();
   }, [videos]);
 
   // =========================================
@@ -356,36 +246,20 @@ const Reels = () => {
       <main className="reels-page-state">
         <div className="reels-loader">
           <div className="loader-spinner" />
-
-          <p>
-            Finding something delicious...
-          </p>
+          <p>Finding something delicious...</p>
         </div>
       </main>
     );
   }
-
-  // =========================================
-  // ERROR STATE
-  // =========================================
 
   if (error) {
     return (
       <main className="reels-page-state">
         <div className="reels-state-content">
           <div className="state-icon">!</div>
-
           <h2>Something went wrong</h2>
-
           <p>{error}</p>
-
-          <button
-            type="button"
-            className="state-button"
-            onClick={() =>
-              window.location.reload()
-            }
-          >
+          <button type="button" className="state-button" onClick={() => window.location.reload()}>
             Try again
           </button>
         </div>
@@ -393,28 +267,14 @@ const Reels = () => {
     );
   }
 
-  // =========================================
-  // EMPTY STATE
-  // =========================================
-
   if (!videos.length) {
     return (
       <main className="reels-page-state">
         <div className="reels-state-content">
           <div className="state-icon">+</div>
-
           <h2>No food reels yet</h2>
-
-          <p>
-            Restaurants haven't added any food
-            reels yet.
-          </p>
-
-          <button
-            type="button"
-            className="state-button"
-            onClick={() => navigate("/")}
-          >
+          <p>Restaurants haven't added any food reels yet.</p>
+          <button type="button" className="state-button" onClick={() => navigate("/")}>
             Go home
           </button>
         </div>
@@ -422,70 +282,27 @@ const Reels = () => {
     );
   }
 
-  // =========================================
-  // MAIN REELS UI
-  // =========================================
-
   return (
-    <main
-      className="reels-page"
-      ref={containerRef}
-    >
-      {/* =====================================
-          TOP BAR
-      ====================================== */}
-
+    <main className="reels-page">
+      {/* Fixed top bar — outside feed so it doesn't scroll */}
       <div className="reels-top-bar">
-
-        {/* Back */}
-        <button
-          type="button"
-          className="reels-back-button"
-          onClick={() => navigate("/")}
-          aria-label="Go back"
-        >
-          <ArrowLeft
-            size={24}
-            strokeWidth={2}
-          />
+        <button type="button" className="reels-back-button" onClick={() => navigate("/")} aria-label="Go back">
+          <ArrowLeft size={24} strokeWidth={2} />
         </button>
-
-        {/* Brand */}
         <div className="reels-brand">
-          <span className="reels-brand-mark">
-            B
-          </span>
-
+          <span className="reels-brand-mark">B</span>
           <span>BiteReel</span>
         </div>
-
       </div>
 
-      {/* =====================================
-          REEL FEED
-      ====================================== */}
-
-      <div className="reels-feed">
-
+      {/* Scrollable feed — ref attached for IntersectionObserver root */}
+      <div className="reels-feed" ref={feedRef}>
         {videos.map((item) => {
-          const isLiked = likedVideos.has(
-            item._id
-          );
-
-          const isSaved = savedVideos.has(
-            item._id
-          );
+          const isLiked = likedVideos.has(item._id);
+          const isSaved = savedVideos.has(item._id);
 
           return (
-            <article
-              className="reel"
-              key={item._id}
-            >
-
-              {/* =================================
-                  VIDEO
-              ================================== */}
-
+            <article className="reel" key={item._id}>
               <video
                 ref={setVideoRef(item._id)}
                 className="reel-video"
@@ -496,212 +313,77 @@ const Reels = () => {
                 preload="metadata"
               />
 
-              {/* =================================
-                  OVERLAY
-              ================================== */}
-
-              <div
-                className="reel-overlay"
-                aria-hidden="true"
-              />
-
-              {/* =================================
-                  INFORMATION
-              ================================== */}
+              <div className="reel-overlay" aria-hidden="true" />
 
               <div className="reel-content">
-
-                <h1 className="reel-food-name">
-                  {item.name}
-                </h1>
+                <h1 className="reel-food-name">{item.name}</h1>
 
                 {item.foodPartner && (
-                  <Link
-                    className="reel-store-link"
-                    to={`/food-partner/profile/${item.foodPartner}`}
-                  >
+                  <Link className="reel-store-link" to={`/food-partner/profile/${item.foodPartner}`}>
                     {item.foodPartner.name}
-
                     <span>→</span>
                   </Link>
                 )}
 
                 {item.description && (
-                  <p
-                    className="reel-description"
-                    title={item.description}
-                  >
+                  <p className="reel-description" title={item.description}>
                     {item.description}
                   </p>
                 )}
-
               </div>
 
-              {/* =================================
-                  RIGHT SIDE ACTIONS
-              ================================== */}
-
               <div className="reel-actions">
-
-                {/* LIKE */}
                 <button
                   type="button"
-                  className={`reel-action-button ${
-                    isLiked ? "liked" : ""
-                  }`}
-                  onClick={(event) =>
-                    handleLike(
-                      event,
-                      item._id
-                    )
-                  }
-                  aria-label={
-                    isLiked
-                      ? "Unlike this food"
-                      : "Like this food"
-                  }
+                  className={`reel-action-button ${isLiked ? "liked" : ""}`}
+                  onClick={(event) => handleLike(event, item._id)}
+                  aria-label={isLiked ? "Unlike this food" : "Like this food"}
                 >
-                  <Heart
-                    size={28}
-                    strokeWidth={2}
-                    fill={
-                      isLiked
-                        ? "currentColor"
-                        : "none"
-                    }
-                  />
-
-                  <span className="reel-action-count">
-                    {likeCounts[item._id] || 0}
-                  </span>
+                  <Heart size={28} strokeWidth={2} fill={isLiked ? "currentColor" : "none"} />
+                  <span className="reel-action-count">{likeCounts[item._id] || 0}</span>
                 </button>
 
-
-                {/* SAVE */}
                 <button
                   type="button"
-                  className={`reel-action-button ${
-                    isSaved ? "saved" : ""
-                  }`}
-                  onClick={(event) =>
-                    handleSave(
-                      event,
-                      item._id
-                    )
-                  }
-                  aria-label={
-                    isSaved
-                      ? "Remove from saved"
-                      : "Save this food"
-                  }
+                  className={`reel-action-button ${isSaved ? "saved" : ""}`}
+                  onClick={(event) => handleSave(event, item._id)}
+                  aria-label={isSaved ? "Remove from saved" : "Save this food"}
                 >
-                  <Bookmark
-                    size={28}
-                    strokeWidth={2}
-                    fill={
-                      isSaved
-                        ? "currentColor"
-                        : "none"
-                    }
-                  />
-
-                  <span className="reel-action-label">
-                    {isSaved
-                      ? "Saved"
-                      : "Save"}
-                  </span>
+                  <Bookmark size={28} strokeWidth={2} fill={isSaved ? "currentColor" : "none"} />
+                  <span className="reel-action-count">{saveCounts[item._id] || 0}</span>
                 </button>
 
-
-                {/* COMMENTS */}
                 <button
                   type="button"
                   className="reel-action-button"
-                  onClick={(event) =>
-                    handleComments(
-                      event,
-                      item._id
-                    )
-                  }
+                  onClick={(event) => handleComments(event, item._id)}
                   aria-label="View comments"
                 >
-                  <MessageCircle
-                    size={28}
-                    strokeWidth={2}
-                  />
-
-                  <span className="reel-action-label">
-                    Comments
-                  </span>
+                  <MessageCircle size={28} strokeWidth={2} />
+                  <span className="reel-action-label">Comments</span>
                 </button>
-
               </div>
-
             </article>
           );
         })}
-
       </div>
 
-      {/* =====================================
-          BOTTOM NAVIGATION
-      ====================================== */}
-
-      <nav
-        className="reels-bottom-nav"
-        aria-label="Main navigation"
-      >
-
-        {/* HOME */}
-        <button
-          type="button"
-          className="reels-nav-item"
-          onClick={() => navigate("/")}
-          aria-label="Home"
-        >
-          <Home
-            size={23}
-            strokeWidth={2}
-          />
-
+      <nav className="reels-bottom-nav" aria-label="Main navigation">
+        <button type="button" className="reels-nav-item" onClick={() => navigate("/")} aria-label="Home">
+          <Home size={23} strokeWidth={2} />
           <span>Home</span>
         </button>
 
-
-        {/* REELS */}
-        <button
-          type="button"
-          className="reels-nav-item active"
-          aria-label="Reels"
-        >
-          <PlaySquare
-            size={23}
-            strokeWidth={2}
-          />
-
+        <button type="button" className="reels-nav-item active" aria-label="Reels">
+          <PlaySquare size={23} strokeWidth={2} />
           <span>Reels</span>
         </button>
 
-
-        {/* SAVED */}
-        <button
-          type="button"
-          className="reels-nav-item"
-          onClick={() =>
-            navigate("/saved")
-          }
-          aria-label="Saved"
-        >
-          <Bookmark
-            size={23}
-            strokeWidth={2}
-          />
-
+        <button type="button" className="reels-nav-item" onClick={() => navigate("/saved")} aria-label="Saved">
+          <Bookmark size={23} strokeWidth={2} />
           <span>Saved</span>
         </button>
-
       </nav>
-
     </main>
   );
 };

@@ -38,6 +38,7 @@ async function getFoodItems(req,res){
     const fooditemsWithUserState = fooditems.map((food) => ({
         ...food,
         likeCount: food.LikeCount || 0,
+        saveCount: food.saveCount || 0,
         isLiked: likedFoodIds.has(food._id.toString()),
         isSaved: savedFoodIds.has(food._id.toString())
     }));
@@ -105,12 +106,14 @@ async function savefood(req,res){
             user:user._id
             });
 
-        await foodModel.findByIdAndUpdate(foodid,
-        {$inc:{saveCount:-1}});
+        const food = await foodModel.findByIdAndUpdate(foodid,
+        {$inc:{saveCount:-1}},
+        {new:true});
 
          return res.status(200).json({
             message:"Food unsaved successfully",
-            isSaved:false
+            isSaved:false,
+            saveCount:food?.saveCount || 0
          })
     }
 
@@ -120,13 +123,15 @@ async function savefood(req,res){
         user:user._id
     });
 
-    await foodModel.findByIdAndUpdate(foodid,
-        {$inc:{saveCount:1}});
+    const food = await foodModel.findByIdAndUpdate(foodid,
+        {$inc:{saveCount:1}},
+        {new:true});
 
     res.status(201).json({
         message:"Food saved successfully",
         save,
-        isSaved:true
+        isSaved:true,
+        saveCount:food?.saveCount || 0
     });
 }
 
@@ -143,6 +148,7 @@ async function getSavedFoodItems(req,res){
         .map((food) => ({
             ...food,
             likeCount: food.LikeCount || 0,
+            saveCount: food.saveCount || 0,
             isLiked: likedFoodIds.has(food._id.toString()),
             isSaved: true
         }));
