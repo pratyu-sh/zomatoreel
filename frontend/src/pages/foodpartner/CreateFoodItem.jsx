@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+﻿import React, { useEffect, useRef, useState } from 'react'
 import '../../styles/CreateFoodItem.css'
 import axios from 'axios'
 import { Link, useNavigate } from 'react-router-dom'
@@ -93,7 +93,7 @@ const CreateFoodItem = () => {
        * Example:
        *
        * await axios.post(
-       *   'http://localhost:3000/api/food',
+       *   `${import.meta.env.VITE_API_URL}/api/food`,
        *   formData,
        *   {
        *     withCredentials: true,
@@ -105,7 +105,7 @@ const CreateFoodItem = () => {
        */
 
       const respose = await axios.post(
-        'http://localhost:3000/api/food',
+        `${import.meta.env.VITE_API_URL}/api/food`,
         formData,
         {
           withCredentials: true,
@@ -230,7 +230,7 @@ const CreateFoodItem = () => {
                 </strong>
 
                 <span>
-                  MP4, MOV or WebM · Max 50MB
+                  MP4, MOV or WebM Â· Max 50MB
                 </span>
 
               </button>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
@@ -21,7 +21,7 @@ const PartnerLogin = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:3000/api/auth/foodpartner/login',
+        `${import.meta.env.VITE_API_URL}/api/auth/foodpartner/login`,
         {
           email,
           password

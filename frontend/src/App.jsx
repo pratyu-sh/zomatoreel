@@ -1,4 +1,4 @@
-import './App.css'
+﻿import './App.css'
 import './styles/variables.css'
 import './styles/Auth.css'
 

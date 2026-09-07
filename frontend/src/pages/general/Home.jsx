@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from 'react'
+﻿import React, { useLayoutEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { gsap } from 'gsap'
 import '../../styles/Home.css'
@@ -215,7 +215,7 @@ const Home = () => {
             Explore Food Reels
 
             <span>
-              →
+              â†’
             </span>
           </button>
 

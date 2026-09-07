@@ -1,4 +1,4 @@
-
+﻿
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
@@ -37,7 +37,7 @@ const SavedReels = () => {
         setError("");
 
         const response = await axios.get(
-          "http://localhost:3000/api/food/saved",
+          `${import.meta.env.VITE_API_URL}/api/food/saved`,
           { withCredentials: true }
         );
 
@@ -98,7 +98,7 @@ const SavedReels = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/food/like",
+        `${import.meta.env.VITE_API_URL}/api/food/like`,
         { foodid: foodId },
         { withCredentials: true }
       );
@@ -129,7 +129,7 @@ const SavedReels = () => {
   };
 
   // =========================================
-  // UNSAVE — removes the reel from this page
+  // UNSAVE â€” removes the reel from this page
   // =========================================
 
   const handleSave = async (event, foodId) => {
@@ -148,7 +148,7 @@ const SavedReels = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/food/save",
+        `${import.meta.env.VITE_API_URL}/api/food/save`,
         { foodid: foodId },
         { withCredentials: true }
       );
@@ -184,7 +184,7 @@ const SavedReels = () => {
   };
 
   // =========================================
-  // INTERSECTION OBSERVER — feedRef as root
+  // INTERSECTION OBSERVER â€” feedRef as root
   // =========================================
 
   useEffect(() => {
@@ -311,7 +311,7 @@ const SavedReels = () => {
                     to={`/food-partner/profile/${item.foodPartner}`}
                   >
                     {item.foodPartner.name || "View restaurant"}
-                    <span>→</span>
+                    <span>â†’</span>
                   </Link>
                 )}
 

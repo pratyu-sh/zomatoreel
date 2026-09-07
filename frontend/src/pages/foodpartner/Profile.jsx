@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+﻿import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import '../../styles/Profile.css'
@@ -23,7 +23,7 @@ const Profile = () => {
       console.log("Profile ID:", id)
 
       const response = await axios.get(
-        `http://localhost:3000/api/foodpartner/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/foodpartner/${id}`,
         {
           withCredentials: true
         }
@@ -243,7 +243,7 @@ const Profile = () => {
                   <div className="profile-reel-overlay">
 
                     <div className="profile-reel-play">
-                      ▶
+                      â–¶
                     </div>
 
                     <span className="profile-reel-name">

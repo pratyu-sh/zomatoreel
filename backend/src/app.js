@@ -10,12 +10,21 @@ const foodpartnerroutes = require('./routes/foodpartner.routes');
 const cors = require('cors');
 
 
-app.use(cors(
-    {
-        origin:'http://localhost:5173',
-        credentials:true
-    }
-));
+const allowedOrigins = [
+    'http://localhost:5173',
+    process.env.FRONTEND_URL
+].filter(Boolean);
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+            callback(null, true);
+        } else {
+            callback(null, true); // Permissive or callback(new Error('Not allowed by CORS'))
+        }
+    },
+    credentials: true
+}));
 app.use(express.json()); // to parse json data from request body
 app.use(cookieParser());
 app.use('/api/auth',authroutes);

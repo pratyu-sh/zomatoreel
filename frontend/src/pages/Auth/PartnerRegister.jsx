@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 const PartnerRegister = () => {
@@ -16,7 +16,7 @@ const PartnerRegister = () => {
     const contactName = formData.get('contactName')
     const phone = formData.get('phone')
 
-    const response = await axios.post('http://Localhost:3000/api/auth/foodpartner/register', {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/foodpartner/register`, {
       name,
       email,
       password,

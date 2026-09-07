@@ -1,4 +1,4 @@
-
+﻿
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
@@ -37,7 +37,7 @@ const Reels = () => {
         setLoading(true);
         setError("");
 
-        const response = await axios.get("http://localhost:3000/api/food", {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/food`, {
           withCredentials: true,
         });
 
@@ -100,7 +100,7 @@ const Reels = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/food/like",
+        `${import.meta.env.VITE_API_URL}/api/food/like`,
         { foodid: foodId },
         { withCredentials: true }
       );
@@ -153,7 +153,7 @@ const Reels = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/food/save",
+        `${import.meta.env.VITE_API_URL}/api/food/save`,
         { foodid: foodId },
         { withCredentials: true }
       );
@@ -198,7 +198,7 @@ const Reels = () => {
   };
 
   // =========================================
-  // INTERSECTION OBSERVER — uses feedRef as root
+  // INTERSECTION OBSERVER â€” uses feedRef as root
   // so it tracks visibility inside the scroll container
   // =========================================
 
@@ -284,7 +284,7 @@ const Reels = () => {
 
   return (
     <main className="reels-page">
-      {/* Fixed top bar — outside feed so it doesn't scroll */}
+      {/* Fixed top bar â€” outside feed so it doesn't scroll */}
       <div className="reels-top-bar">
         <button type="button" className="reels-back-button" onClick={() => navigate("/")} aria-label="Go back">
           <ArrowLeft size={24} strokeWidth={2} />
@@ -295,7 +295,7 @@ const Reels = () => {
         </div>
       </div>
 
-      {/* Scrollable feed — ref attached for IntersectionObserver root */}
+      {/* Scrollable feed â€” ref attached for IntersectionObserver root */}
       <div className="reels-feed" ref={feedRef}>
         {videos.map((item) => {
           const isLiked = likedVideos.has(item._id);
@@ -321,7 +321,7 @@ const Reels = () => {
                 {item.foodPartner && (
                   <Link className="reel-store-link" to={`/food-partner/profile/${item.foodPartner}`}>
                     {item.foodPartner.name}
-                    <span>→</span>
+                    <span>â†’</span>
                   </Link>
                 )}
 
